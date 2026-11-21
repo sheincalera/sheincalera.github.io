@@ -140,7 +140,10 @@ svg { width: 20px; height: 20px; flex: none; }
 .cat-tile .ring img, .cat-tile .ring .ph { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; font-size: 22px; }
 .cat-tile .ring.special { display: grid; place-items: center; background: var(--ink); color: var(--gold-2); border-color: var(--ink); }
 .cat-tile .ring.special svg { width: 28px; height: 28px; }
-.cat-tile .ring.sale { background: var(--wine); color: #fff; border-color: var(--wine); font: 600 22px var(--serif); }
+/* Centrado igual que el círculo de "Todo" (antes el % quedaba arriba a la izquierda y chico). */
+.cat-tile .ring.sale { display: grid; place-items: center; background: var(--wine); color: #fff; border-color: var(--wine); font: 600 34px/1 var(--serif); }
+.cat-tile.on .ring.sale, .cat-tile.on .ring.special { border: 2px solid var(--gold); padding: 2px; }
+@media (min-width: 1024px) { .cat-tile .ring.sale { font-size: 40px; } }
 .cat-tile span { font-size: 12px; line-height: 1.2; color: var(--ink-2); }
 .cat-tile small { display: block; color: var(--muted); font-size: 10.5px; }
 .cat-tile.on .ring { border: 2px solid var(--gold); padding: 2px; }

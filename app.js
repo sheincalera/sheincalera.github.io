@@ -344,13 +344,16 @@
   // opción así es lo que hace que los filtros sean dinámicos sin quedarse en cero al elegir.
   function words() { return state.q ? norm(state.q).split(/\s+/) : []; }
   function matches(p, skip, ignoreLine) {
+    // "catview" = sin categoría NI vista: lo usan los círculos "Todo" y "Rebajas", que deben
+    // contar igual estés en la vista que estés (antes "Todo" mostraba el número de rebajas).
+    var sCat = skip === "cat" || skip === "catview", sView = skip === "view" || skip === "catview";
     if (!ignoreLine && p.line !== state.line) return false;
-    if (skip !== "cat" && state.cat && p._catLabel !== state.cat) return false;
-    if (skip !== "cat" && skip !== "type" && state.type && p.type !== state.type) return false;
+    if (!sCat && state.cat && p._catLabel !== state.cat) return false;
+    if (!sCat && skip !== "type" && state.type && p.type !== state.type) return false;
     if (skip !== "size" && state.sizes.length && !p._sizeCodes.some(function (c) { return state.sizes.indexOf(c) >= 0; })) return false;
     if (skip !== "color" && state.colors.length && state.colors.indexOf(p._color) < 0) return false;
     if (skip !== "price" && state.prices.length && state.prices.indexOf(p._bucket) < 0) return false;
-    if (skip !== "offer" && skip !== "view" && (state.onlyOffers || (VIEWS[state.view] && VIEWS[state.view].sale)) && !p.offer) return false;
+    if (skip !== "offer" && !sView && (state.onlyOffers || (VIEWS[state.view] && VIEWS[state.view].sale)) && !p.offer) return false;
     var w = words();
     for (var i = 0; i < w.length; i++) if (p._search.indexOf(w[i]) < 0) return false;
     return true;
@@ -443,7 +446,7 @@
     var c = lineCounts();
     var html = lines().map(function (l) {
       return '<button class="line-tab" role="tab" aria-selected="' + (l === state.line) + '" data-line="' + esc(l) + '">' +
-        esc(lineLabel(l)) + "<small>" + c[l] + "</small></button>";
+        esc(lineLabel(l)) + "</button>"; // sin contador: pedido de la dueña (21-nov-2026)
     }).join("");
     $("lineTabsMobile").innerHTML = html;
     $("lineTabsMenu").innerHTML = html;
@@ -467,7 +470,7 @@
           "</div>";
       }).join("");
       return '<div class="nav-item"><button type="button" class="nav-link' + (l === state.line ? " on" : "") + '" data-nav="' + esc(l) + '||">' +
-        esc(lineLabel(l)) + "<small>" + c[l] + '</small></button><div class="mega">' + cols + "</div></div>";
+        esc(lineLabel(l)) + '</button><div class="mega">' + cols + "</div></div>";
     }).join("");
   }
   $("mainNav").addEventListener("click", function (e) {
@@ -532,11 +535,13 @@
   function renderCatTiles() {
     var counts = countBy("cat", function (p) { return p._catLabel; });
     var cats = treeOf(state.line);
-    var total = state.products.filter(function (p) { return matches(p, "cat"); }).length;
-    var sale = state.products.filter(function (p) { return p.line === state.line && p.offer; }).length;
-    var html = '<button type="button" class="cat-tile' + (!state.cat ? " on" : "") + '" data-cat="">' +
+    var base = state.products.filter(function (p) { return matches(p, "catview"); });
+    var total = base.length;
+    var sale = base.filter(function (p) { return p.offer; }).length;
+    var enRebajas = !state.cat && VIEWS[state.view].sale;
+    var html = '<button type="button" class="cat-tile' + (!state.cat && !enRebajas ? " on" : "") + '" data-cat="">' +
       '<div class="ring special">' + icon("i-spark") + "</div><span>Todo<small>" + total + "</small></span></button>";
-    if (sale) html += '<button type="button" class="cat-tile" data-sale="1"><div class="ring sale">%</div><span>Rebajas<small>' + sale + "</small></span></button>";
+    if (sale || enRebajas) html += '<button type="button" class="cat-tile' + (enRebajas ? " on" : "") + '" data-sale="1"><div class="ring sale">%</div><span>Rebajas<small>' + sale + "</small></span></button>";
     cats.forEach(function (c) {
       var n = counts[c.label] || 0;
       if (!n && state.cat !== c.label) return;
@@ -551,7 +556,12 @@
   $("catTiles").addEventListener("click", function (e) {
     var b = e.target.closest(".cat-tile"); if (!b) return;
     if (b.hasAttribute("data-sale")) { setCat("", ""); state.view = "pct"; track("select_content", { content_type: "vista", item_id: "rebajas" }); }
-    else setCat(b.getAttribute("data-cat"), "");
+    else {
+      var c = b.getAttribute("data-cat");
+      // "Todo" saca de Rebajas: es "enséñame todo", no "todo lo rebajado".
+      if (!c && VIEWS[state.view].sale) { state.view = "new"; state.onlyOffers = false; }
+      setCat(c, "");
+    }
     refresh(true);
   });
 

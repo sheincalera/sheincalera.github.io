@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Shein Calera · Novedades en tienda</title>
+  <meta name="description" content="Boutique de novedades en Calera de Víctor Rosales. Mira las prendas disponibles hoy, sus tallas y precios. Aparta por WhatsApp y recoge en tienda.">
+  <meta name="theme-color" content="#FAF7F2">
+  <!-- ID de medición de Google Analytics 4 (empieza con G-). Vacío = sin estadísticas.
+       Es público por diseño: cualquier página con GA lo trae visible. Ver Deploy/LANDING.md. -->
+  <meta name="ga-id" content="G-S1R8T8JBVH">
+  <!-- Lo que NO se anuncia en la página aunque haya existencia (se vende en mostrador, no por aquí).
+       Nombres separados por punto y coma, tal como están en el catálogo de la app; no importan
+       mayúsculas ni acentos. Categoría = c_product_category; tipo = c_product_type. -->
+  <meta name="ocultar-categorias" content="DULCERIA">
+  <meta name="ocultar-tipos" content="Bolsas de Regalo">
+
+  <!-- Vista previa al compartir en WhatsApp / Facebook / Instagram. Los rastreadores de las redes
+       NO ejecutan JavaScript, así que esto tiene que ir escrito aquí, no generado por app.js.
+       og:image debe ser una URL ABSOLUTA: Actualizar-Sitio.ps1 la completa al publicar. -->
+  <meta property="og:url" content="https://sheincalera.github.io/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Shein Calera · Novedades cada semana">
+  <meta property="og:description" content="Mira las prendas disponibles hoy, sus tallas y precios. Aparta por WhatsApp y recoge en tienda.">
+  <meta property="og:image" content="https://sheincalera.github.io/assets/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="assets/favicon-32.png" sizes="32x32">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=5">
+</head>
+<body>
+  <a class="skip" href="#catalogo">Ir al catálogo</a>
+
+  <!-- Aviso superior: lo que más preguntan, dicho antes de que pregunten -->
+  <div class="announce" id="announce">Solo en tienda física<span class="only-desktop-inline"> · Sin envíos</span> · Aparta por WhatsApp</div>
+
+  <header class="header">
+    <div class="wrap header-in">
+      <button class="icon-btn only-mobile" type="button" id="openMenu" aria-label="Abrir menú de categorías">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-menu"/></svg>
+      </button>
+      <a class="brand" href="#" id="brandLink" aria-label="Inicio">
+        <img src="assets/logo-sm.png" alt="" width="40" height="40">
+        <span class="brand-text"><b data-bind="store.name">Shein Calera</b><small>Boutique de novedades</small></span>
+      </a>
+
+      <!-- Escritorio: líneas con panel desplegable de categorías (estilo departamental) -->
+      <nav class="mainnav only-desktop" id="mainNav" aria-label="Líneas"></nav>
+
+      <div class="header-actions">
+        <label class="search-desktop only-desktop">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg>
+          <input type="search" id="qDesktop" placeholder="Buscar prenda o código" autocomplete="off" enterkeyhint="search">
+        </label>
+        <button class="icon-btn only-mobile" type="button" id="openSearch" aria-label="Buscar" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg>
+        </button>
+        <a class="icon-btn only-desktop wa-only" data-wa-general target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>
+        </a>
+        <button class="icon-btn bag-btn" type="button" id="openBag" aria-label="Abrir mi bolsa">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bag"/></svg>
+          <span class="bag-count" id="bagCount" hidden>0</span>
+        </button>
+      </div>
+    </div>
+    <div class="search-mobile" id="searchMobile" hidden>
+      <div class="wrap">
+        <label class="search-field">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg>
+          <input type="search" id="qMobile" placeholder="Buscar prenda o código" autocomplete="off" enterkeyhint="search">
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Líneas en móvil: el primer nivel de la jerarquía, siempre a la vista -->
+    <div class="wrap only-mobile">
+      <div class="line-tabs" id="lineTabsMobile" role="tablist" aria-label="Línea"></div>
+    </div>
+
+    <!-- Portada: promoción con vigencia si la hay; si no, lo recién llegado -->
+    <section class="hero" id="hero" aria-labelledby="heroTitle">
+      <div class="wrap">
+        <div class="hero-head">
+          <div>
+            <p class="eyebrow" id="heroEyebrow">Recién llegado</p>
+            <h1 class="hero-title" id="heroTitle">Lo nuevo de la semana</h1>
+          </div>
+          <div class="countdown" id="countdown" hidden>
+            <span>Termina en</span><b id="cdText"></b>
+          </div>
+          <button type="button" class="link-btn" id="heroAll">Ver todo</button>
+        </div>
+        <div class="rail" id="heroRail"></div>
+      </div>
+    </section>
+
+    <section id="catalogo" class="catalog" aria-label="Catálogo">
+      <div class="wrap">
+        <!-- Categorías con foto: segundo nivel de la jerarquía -->
+        <div class="cat-tiles" id="catTiles" aria-label="Categorías"></div>
+      </div>
+
+      <div class="wrap layout">
+        <!-- Barra lateral (escritorio) / panel de filtros (móvil) -->
+        <aside class="filters" id="filters" aria-label="Filtros" tabindex="-1">
+          <div class="filters-head only-mobile">
+            <h2>Filtrar</h2>
+            <button class="icon-btn" type="button" id="closeFilters" aria-label="Cerrar filtros">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg>
+            </button>
+          </div>
+          <div class="filters-body" id="filtersBody"></div>
+          <div class="filters-foot only-mobile">
+            <button type="button" class="btn btn-ghost" id="clearAllMobile">Limpiar</button>
+            <button type="button" class="btn btn-dark" id="applyFilters">Ver prendas</button>
+          </div>
+        </aside>
+
+        <div class="results">
+          <nav class="crumbs" id="crumbs" aria-label="Estás en"></nav>
+          <div class="results-head">
+            <h2 class="results-title" id="resultsTitle">Dama</h2>
+            <span class="results-count" id="resultsCount"></span>
+          </div>
+          <!-- Tipos: tercer nivel, aparecen al elegir una categoría -->
+          <div class="type-chips" id="typeChips"></div>
+
+          <!-- Barra fija: Filtrar + vistas visuales (reemplaza el desplegable de "ordenar") -->
+          <div class="toolbar" id="toolbar">
+            <button type="button" class="filter-btn only-mobile" id="openFilters">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sliders"/></svg>
+              Filtrar <span class="filter-badge" id="filterBadge" hidden>0</span>
+            </button>
+            <div class="views" id="views" role="tablist" aria-label="Ver"></div>
+          </div>
+
+          <div class="applied" id="applied"></div>
+
+          <div class="grid" id="grid"></div>
+          <div class="empty" id="empty" hidden>
+            <p class="empty-title">No hay prendas con estos filtros</p>
+            <p id="emptyHint"></p>
+            <button type="button" class="btn btn-dark" id="clearFilters">Quitar filtros</button>
+          </div>
+          <div id="sentinel" aria-hidden="true"></div>
+          <div class="loading" id="loading">
+            <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cómo comprar -->
+    <section class="howto">
+      <div class="wrap">
+        <p class="eyebrow center">Cómo comprar</p>
+        <h2 class="section-title center">Así de fácil</h2>
+        <ol class="steps">
+          <li><b>Elige</b><span>Toca la prenda y escoge tu talla. La mayoría son piezas únicas.</span></li>
+          <li><b>Escríbenos</b><span>Manda tu bolsa por WhatsApp y te confirmamos que sigue disponible.</span></li>
+          <li><b>Recoge</b><span>Pasa a la tienda por tus prendas.</span></li>
+        </ol>
+        <p class="fine">Venta solo en tienda física: no hacemos envíos ni entregas a domicilio. Precios y existencias se actualizan durante el día; la prenda se aparta cuando te confirmamos por WhatsApp.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-in">
+      <div class="f-brand">
+        <img src="assets/logo-sm.png" alt="" width="56" height="56">
+        <p class="f-name" data-bind="store.name">Shein Calera</p>
+      </div>
+      <div>
+        <p class="f-label">Visítanos</p>
+        <p data-bind="store.address" data-hide-empty></p>
+        <p data-bind="store.hours" data-hide-empty></p>
+        <p><a id="mapsLink" target="_blank" rel="noopener" hidden>Cómo llegar →</a></p>
+      </div>
+      <div>
+        <p class="f-label">Síguenos</p>
+        <div class="socials" id="socials"></div>
+        <p><a class="wa-only" data-wa-general target="_blank" rel="noopener">WhatsApp <span data-bind="store.phone"></span></a></p>
+      </div>
+      <div class="f-meta">
+        <p class="updated" id="updated"></p>
+        <p class="updated" id="analyticsNote" hidden>Usamos Google Analytics para contar visitas de forma anónima y saber qué prendas les gustan más. No pedimos ni guardamos tus datos.</p>
+      </div>
+    </div>
+  </footer>
+
+  <a class="fab wa-only" data-wa-general target="_blank" rel="noopener" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>
+  </a>
+
+  <!-- MENÚ MÓVIL: Línea > Categoría > Tipo -->
+  <dialog class="drawer drawer-left" id="menuDrawer" aria-labelledby="menuTitle">
+    <div class="drawer-in">
+      <div class="drawer-head">
+        <h3 id="menuTitle">Categorías</h3>
+        <button class="icon-btn" type="button" data-close aria-label="Cerrar menú">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg>
+        </button>
+      </div>
+      <div class="line-tabs in-drawer" id="lineTabsMenu" role="tablist" aria-label="Línea"></div>
+      <div class="menu-tree" id="menuTree"></div>
+      <div class="menu-foot">
+        <a class="btn btn-wa btn-block wa-only" data-wa-general target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg> Escríbenos
+        </a>
+        <p class="fine left" data-bind="store.address"></p>
+        <p class="fine left" data-bind="store.hours"></p>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- DETALLE DE PRENDA -->
+  <dialog class="sheet" id="productSheet" aria-labelledby="pTitle">
+    <div class="sheet-in">
+      <button class="sheet-close" type="button" data-close aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg>
+      </button>
+      <div class="p-media"><img id="pImg" alt="" referrerpolicy="no-referrer"></div>
+      <div class="p-body">
+        <p class="p-crumb" id="pCrumb"></p>
+        <h3 id="pTitle" class="p-title"></h3>
+        <div class="p-price" id="pPrice"></div>
+        <p class="p-ends" id="pEnds" hidden></p>
+        <p class="p-unique" id="pUnique" hidden>Pieza única en tienda</p>
+        <div class="p-sizes-label">Talla <span id="pSizeHint"></span></div>
+        <div class="p-sizes" id="pSizes" role="radiogroup" aria-label="Talla"></div>
+        <div class="p-actions">
+          <button type="button" class="btn btn-dark btn-block" id="pAdd">Agregar a mi bolsa</button>
+          <a class="btn btn-wa-outline btn-block" id="pWa" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg> Preguntar por WhatsApp
+          </a>
+        </div>
+        <dl class="p-facts" id="pFacts"></dl>
+        <p class="p-desc" id="pDesc" hidden></p>
+        <button type="button" class="link-btn" id="pShare">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-share"/></svg> Compartir esta prenda
+        </button>
+        <div class="p-similar" id="pSimilarWrap" hidden>
+          <p class="p-similar-title">También te puede gustar</p>
+          <div class="rail rail-sm" id="pSimilar"></div>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- BOLSA -->
+  <dialog class="drawer drawer-right" id="bagDrawer" aria-labelledby="bagTitle">
+    <div class="drawer-in">
+      <div class="drawer-head">
+        <h3 id="bagTitle">Mi bolsa</h3>
+        <button class="bag-clear" type="button" id="bagClear" hidden>Vaciar</button>
+        <button class="icon-btn" type="button" data-close aria-label="Cerrar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg>
+        </button>
+      </div>
+      <div class="bag-items" id="bagItems"></div>
+      <div class="bag-foot">
+        <div class="bag-total"><span>Total</span><b id="bagTotal">$0</b></div>
+        <p class="bag-note">Recoges tus prendas en tienda. No hacemos envíos.</p>
+        <a class="btn btn-wa btn-block" id="bagSend" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg> Enviar pedido por WhatsApp
+        </a>
+        <p class="fine">Te confirmamos existencia por WhatsApp antes de apartar.</p>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <!-- Íconos -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" d="M5 8h14l-1 12H6L5 8Zm4 0V6a3 3 0 0 1 6 0v2"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="m20 20-4.2-4.2M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M4 7h16M4 12h16M4 17h10"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M4 7h10m4 0h2M4 17h4m4 0h8M14 5v4M8 15v4"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l1.8 5.6L19.5 9l-5.7 1.5L12 16l-1.8-5.5L4.5 9l5.7-1.4L12 2Zm6 12 .9 2.6 2.6.9-2.6.9L18 21l-.9-2.6-2.6-.9 2.6-.9L18 14Z"/></symbol>
+    <symbol id="i-pct" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M6 18 18 6M7.5 9.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm9 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></symbol>
+    <symbol id="i-cash" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M12 3v18M16.5 7.5c-.6-1.3-2.2-2-4.2-2-2.4 0-4 1.2-4 3s1.6 2.6 4 3.1 4.3 1.3 4.3 3.3-1.8 3.1-4.3 3.1c-2.2 0-3.9-.8-4.5-2.3"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M12 7v5l3 2M12 21a9 9 0 1 1 0-18 9 9 0 0 1 0 18Z"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M7 17V7m0 0-3 3m3-3 3 3M13 8h7M13 12h5M13 16h3"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M7 7v10m0 0-3-3m3 3 3-3M13 8h3M13 12h5M13 16h7"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M10 11v6m4-6v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M12 3v12M7 8l5-5 5 5M5 13v6h14v-6"/></symbol>
+    <symbol id="i-fb" viewBox="0 0 24 24"><path fill="currentColor" d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H8v4h2v8h4v-8h3l1-4h-4V8Z"/></symbol>
+    <symbol id="i-ig" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Zm5 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm5-9.5h.01"/></symbol>
+    <symbol id="i-tt" viewBox="0 0 24 24"><path fill="currentColor" d="M16 3c.3 2.2 1.6 3.6 4 3.8v3.4a7.3 7.3 0 0 1-4-1.2v6.3A6.3 6.3 0 1 1 9.7 9v3.5a2.8 2.8 0 1 0 2.8 2.8V3H16Z"/></symbol>
+  </svg>
+
+  <script src="app.js?v=5" defer></script>
+</body>
+</html>

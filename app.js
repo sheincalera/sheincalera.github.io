@@ -955,7 +955,8 @@
     $("pUnique").hidden = p.stock !== 1;
     var facts = [["Código", p.code]];
     if (p._color) facts.push(["Color", p._color]);
-    if (p.arrived_at) facts.push(["Llegó", new Date(p.arrived_at + "T12:00:00").toLocaleDateString("es-MX", { day: "numeric", month: "long" })]);
+    // Sin fecha de llegada a la vista (pedido de la dueña, 21-nov-2026). arrived_at se sigue usando
+    // solo para ORDENAR por novedad, nunca se muestra.
     $("pFacts").innerHTML = facts.map(function (f) { return "<dt>" + esc(f[0]) + "</dt><dd>" + esc(f[1]) + "</dd>"; }).join("");
     $("pDesc").hidden = !p.description;
     $("pDesc").textContent = p.description || "";
